@@ -146,18 +146,13 @@ h2{font-size:clamp(26px,3.4vw,40px);line-height:1.12;letter-spacing:-.02em;margi
   *{transition:none!important;scroll-behavior:auto!important}
 }
 
-/* ---------- welcome gate ---------- */
-.gate{
-  position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
-  padding:40px 24px;overflow-y:auto;
+/* ---------- welcome page ---------- */
+.welcome-body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:56px 24px;
   background:
     radial-gradient(120% 90% at 18% 8%,rgba(0,232,138,.13) 0%,rgba(5,8,11,0) 62%),
     radial-gradient(90% 70% at 88% 100%,rgba(0,232,138,.07) 0%,rgba(5,8,11,0) 60%),
-    var(--bg);
-}
-html:not(.js) .gate,html.entered .gate{display:none}
-html.js:not(.entered){overflow:hidden}
-.gate-inner{width:100%;max-width:860px}
+    var(--bg);}
+.welcome{width:100%;max-width:860px}
 .gate-eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:.24em;color:var(--dim);margin:0 0 20px}
 .gate-title{font-size:clamp(30px,4.6vw,54px);line-height:1.07;letter-spacing:-.025em;margin:0 0 20px;font-weight:800}
 .gate-lede{max-width:660px;color:var(--muted);font-size:clamp(15.5px,1.5vw,18px);margin:0 0 34px}
@@ -166,10 +161,9 @@ html.js:not(.entered){overflow:hidden}
 .gate-k{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.18em;color:var(--green);margin-bottom:9px}
 .gate-v{display:block;font-size:14px;line-height:1.55;color:var(--muted)}
 .gate-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.gate-enter{cursor:pointer;font-family:inherit}
 .gate-foot{margin:26px 0 0;font-size:12.5px;color:var(--dim)}
 @media(max-width:760px){
-  .gate{padding:32px 20px;align-items:flex-start}
+  .welcome-body{padding:40px 20px;align-items:flex-start}
   .gate-cards{grid-template-columns:1fr}
   .gate-cta .btn{width:100%;text-align:center}
 }
