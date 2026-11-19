@@ -84,6 +84,8 @@ h2{font-size:clamp(26px,3.4vw,40px);line-height:1.12;letter-spacing:-.02em;margi
 
 /* ---------- videos ---------- */
 .videos{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+/* a third card would sit alone on the left; centre it instead */
+.videos>.video:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 13px);justify-self:center}
 .video{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
 .video video{width:100%;background:#000;aspect-ratio:16/9}
 .video figcaption{padding:18px 20px 22px;font-size:14.5px;color:var(--muted);line-height:1.6}
@@ -125,6 +127,7 @@ h2{font-size:clamp(26px,3.4vw,40px);line-height:1.12;letter-spacing:-.02em;margi
 @media(max-width:960px){
   .cards{grid-template-columns:1fr 1fr}
   .videos{grid-template-columns:1fr}
+  .videos>.video:last-child:nth-child(odd){width:100%}
   .learn-grid{grid-template-columns:1fr;gap:34px}
   .record{grid-template-columns:1fr}
 }
