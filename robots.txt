@@ -1,0 +1,3 @@
+# Preview deployment. Not indexed until the owner approves publication.
+User-agent: *
+Disallow: /
