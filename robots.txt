@@ -1,3 +1,4 @@
-# Preview deployment. Not indexed until the owner approves publication.
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://llong2026.github.io/squirlos-showcase/sitemap.xml
