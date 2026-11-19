@@ -10,9 +10,51 @@
 <meta property="og:image" content="assets/banner.jpg">
 <link rel="canonical" href="https://showcase.squirlos-technologies.com/">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+/* Welcome gate: shown once per session, never at the cost of the content.
+   Without JS the gate is hidden and the showcase renders as normal. */
+(function(){
+  var d=document.documentElement; d.className+=' js';
+  try{
+    var deep = location.hash && location.hash.length>1 && location.hash!=='#top';
+    if(sessionStorage.getItem('sq-entered')==='1' || deep){ d.className+=' entered'; }
+  }catch(e){}
+})();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2305080b'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%2300e88a' stroke-width='3'/%3E%3C/svg%3E">
 </head>
 <body>
+
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="gate-inner">
+    <p class="gate-eyebrow">SQUIRL OS TECHNOLOGIES LLC</p>
+    <h1 id="gate-title" class="gate-title">Deterministic containment<br>for probabilistic AI.</h1>
+    <p class="gate-lede">A frozen validator sits between the language model and any side effect. Everything behind this door is either a running app, a recording of one, or a paper with a DOI you can resolve.</p>
+
+    <div class="gate-cards">
+      <div class="gate-card">
+        <span class="gate-k">What this is</span>
+        <span class="gate-v">Five live apps, three recordings, and the public record they come from.</span>
+      </div>
+      <div class="gate-card">
+        <span class="gate-k">What it isn't</span>
+        <span class="gate-v">Not a claim that the cage is proven. Scoped containment, prototype status, stated on the page.</span>
+      </div>
+      <div class="gate-card">
+        <span class="gate-k">What holds it up</span>
+        <span class="gate-v">62 recorded batteries, 109 of 109 falsifiers held, 0 escapes. Every figure traces to a receipt.</span>
+      </div>
+    </div>
+
+    <div class="gate-cta">
+      <button class="btn gate-enter" id="gate-enter" type="button">Enter the showcase</button>
+      <a class="btn btn-ghost" href="#record" id="gate-skip">Skip to the record</a>
+    </div>
+
+    <p class="gate-foot">Prototype and research material. Not a production warranty, and not an offer of ownership.</p>
+  </div>
+</div>
+
 
 <header class="nav">
   <div class="wrap nav-inner">
@@ -239,5 +281,23 @@
 </footer>
 
 <script src="assets/site.js"></script>
+<script>
+(function(){
+  var gate=document.getElementById('gate'), enter=document.getElementById('gate-enter'), skip=document.getElementById('gate-skip');
+  if(!gate) return;
+  function open_(){
+    document.documentElement.className='js entered';
+    try{ sessionStorage.setItem('sq-entered','1'); }catch(e){}
+    gate.setAttribute('aria-hidden','true');
+    if(enter) enter.blur();
+  }
+  enter.addEventListener('click', open_);
+  skip.addEventListener('click', open_);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && !document.documentElement.classList.contains('entered')) open_();
+  });
+  if(!document.documentElement.classList.contains('entered')) enter.focus();
+})();
+</script>
 </body>
 </html>
