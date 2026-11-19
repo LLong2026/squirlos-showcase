@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://llong2026.github.io/squirlos-showcase/sitemap.xml
+Sitemap: https://showcase.squirlos-technologies.com/sitemap.xml
