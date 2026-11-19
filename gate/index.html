@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Submit a proposal. Watch it get refused. · SQUIRL OS™</title>
+<meta name="description" content="A live fail-closed guard. Submit a proposal, get ALLOW or DENY with the reason named, and a receipt you can hash yourself with sha256sum.">
+<link rel="canonical" href="https://showcase.squirlos-technologies.com/gate/">
+<meta property="og:title" content="Submit a proposal. Watch it get refused.">
+<meta property="og:description" content="A live fail-closed guard. The decision is named, and the receipt is verifiable with sha256sum.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+  .gate-head{padding:64px 24px 40px;border-bottom:1px solid var(--line)}
+  .gate-head h1{max-width:820px}
+  .gate-head .lede{max-width:740px}
+  .gate-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:start;padding:40px 0 8px}
+  @media(max-width:900px){.gate-grid{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .panel h3{margin:0 0 6px;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700}
+  .presets{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 16px}
+  .chip{font:inherit;font-size:13px;padding:8px 13px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink);cursor:pointer}
+  .chip:hover{border-color:var(--green);color:var(--green)}
+  .chip[aria-pressed="true"]{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+  textarea{width:100%;min-height:180px;background:var(--bg-2);color:var(--ink);border:1px solid var(--line-2);border-radius:10px;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.55;resize:vertical}
+  textarea:focus{outline:2px solid var(--green);outline-offset:1px}
+  label.lbl{display:block;font-size:13px;color:var(--muted);margin:14px 0 6px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .verdict{border-radius:12px;border:1px solid var(--line-2);padding:18px;background:var(--bg-2)}
+  .verdict-word{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:40px;font-weight:800;letter-spacing:.02em;line-height:1;margin:0}
+  .v-deny{color:#ff7a6b}.v-allow{color:var(--green)}
+  .v-none{color:var(--dim);font-size:26px}
+  .vsub{color:var(--muted);font-size:13.5px;margin:10px 0 0}
+  .codes{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0;padding:0;list-style:none}
+  .codes li{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;padding:5px 9px;border-radius:6px;background:rgba(255,122,107,.12);color:#ffb3a8;border:1px solid rgba(255,122,107,.28)}
+  .reasons{margin:14px 0 0;padding-left:18px;color:var(--muted);font-size:13.5px}
+  .reasons li{margin:0 0 7px}
+  .digest{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--dim);word-break:break-all;margin:14px 0 0;padding:10px;border:1px dashed var(--line-2);border-radius:8px;background:rgba(0,0,0,.25);white-space:pre-wrap}
+  .match-ok{color:var(--green)}.match-bad{color:#ff7a6b}
+  .limits{border-left:2px solid var(--green);padding:2px 0 2px 20px;margin:12px 0 0}
+  .limits li{margin:0 0 12px;color:var(--muted);font-size:15px}
+  .limits strong{color:var(--ink)}
+  .fineprint{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--dim);margin-top:26px}
+  .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">SQUIRL OS<sup>™</sup></a>
+    <nav class="nav-links">
+      <a href="/home/">Showcase</a>
+      <a href="/home/#watch">Watch</a>
+      <a href="/home/#record">Record</a>
+      <a href="/gate/">Gate</a>
+    </nav>
+    <a class="btn btn-sm" href="/home/">Enter the showcase</a>
+  </div>
+</header>
+
+<section class="gate-head">
+  <div class="wrap">
+    <p class="eyebrow">LIVE GATE · FAIL-CLOSED · ONE REQUEST PER SUBMISSION</p>
+    <h1>Submit a proposal.<br>Watch it get refused.</h1>
+    <p class="lede">A guard sits between a language model and any side effect. It refuses what it cannot
+      positively recognise, and it names the reason. This page posts your proposal to a live guard and
+      shows you the answer. No model is called and no account is needed.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="gate-grid">
+
+    <div class="panel">
+      <h3>The proposal</h3>
+      <p class="vsub" style="margin-top:2px">Pick a case, or write your own JSON and submit it.</p>
+      <div class="presets" id="presets" role="group" aria-label="Example proposals">
+        <button class="chip" data-case="allow" aria-pressed="false">A conformant write</button>
+        <button class="chip" data-case="deny" aria-pressed="false">A destructive request</button>
+        <button class="chip" data-case="unseen" aria-pressed="false">An action it has never seen</button>
+        <button class="chip" data-case="empty" aria-pressed="false">Nothing at all</button>
+      </div>
+      <label class="lbl" for="proposal">Proposal JSON</label>
+      <textarea id="proposal" spellcheck="false">{
+  "action_type": "write_record",
+  "collection": "trophy_roster",
+  "record_id": "R-1",
+  "target_app_id": "demo-app",
+  "payload": { "rows": 63 }
+}</textarea>
+      <p class="vsub">The guard reads the action, the fields that action requires, whether the proposal
+        declares itself destructive, the payload size, and whether a write names its target.</p>
+      <div class="row">
+        <button class="btn" id="submit">Submit to the gate</button>
+        <button class="btn btn-ghost" id="reset">Reset</button>
+      </div>
+      <p class="vsub" id="status" aria-live="polite"></p>
+    </div>
+
+    <div class="panel" aria-live="polite">
+      <h3>The verdict</h3>
+      <div class="verdict" id="verdict-box">
+        <p class="verdict-word v-none" id="verdict-word">NOT SUBMITTED</p>
+        <p class="vsub" id="verdict-sub">Default behaviour is deny. Submit a proposal to see which way it goes.</p>
+        <ul class="codes" id="codes"></ul>
+        <ul class="reasons" id="reasons"></ul>
+        <p class="digest" id="digest" hidden></p>
+      </div>
+      <div class="row">
+        <button class="btn btn-ghost" id="copy" disabled>Copy receipt</button>
+        <button class="btn btn-ghost" id="download" disabled>Download receipt</button>
+      </div>
+      <p class="vsub" id="parse-error" hidden style="color:#ff7a6b"></p>
+    </div>
+
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:34px">
+  <div class="panel">
+    <h3>Check the receipt yourself</h3>
+    <p class="vsub" style="margin-top:2px">The receipt carries the exact bytes the digest was taken over.
+      Paste it here and this page recomputes the hash. Or ignore this page entirely and run the same
+      thing in a terminal, because the hash is plain SHA-256 over those bytes.</p>
+    <label class="lbl" for="receipt">Receipt JSON</label>
+    <textarea id="receipt" spellcheck="false" style="min-height:150px" placeholder='{"algorithm":"SHA-256","digest":"…","payload_canonical":"…"}'></textarea>
+    <div class="row">
+      <button class="btn" id="verify">Verify</button>
+      <button class="btn btn-ghost" id="load">Load the receipt above</button>
+      <button class="btn btn-ghost" id="tamper" disabled>Tamper with it</button>
+      <button class="btn btn-ghost" id="copycmd" disabled>Copy the sha256sum command</button>
+    </div>
+    <p class="vsub" id="verify-out" aria-live="polite"></p>
+    <p class="digest" id="verify-detail" hidden></p>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:34px">
+  <div class="panel">
+    <h3>What this shows, and what it does not</h3>
+    <ul class="limits">
+      <li><strong>It shows the default.</strong> A proposal the guard cannot positively recognise is
+        refused, the refusal carries a reason code, and the decision carries a digest over the bytes.
+        A conformant proposal passes, which matters: a guard that refuses everything proves nothing.</li>
+      <li><strong>It is a demonstration policy, not the production one.</strong> The action vocabulary
+        here is a demonstration set. The policy that governs the real runtime is not published, is not
+        in this page, and cannot be read from it. What is shared is the mechanism, which is already
+        described in the deck and the lessons.</li>
+      <li><strong>Any public gate can be queried.</strong> Someone determined could map whatever policy
+        sits behind it, one proposal at a time. That is exactly why this one runs a demonstration
+        policy rather than the real one.</li>
+      <li><strong>It does not judge whether a proposal is wise.</strong> The guard checks shape and
+        scope. A conformant, correctly scoped proposal that is strategically wrong still returns ALLOW.
+        The checker that would judge intent does not exist yet.</li>
+      <li><strong>A receipt is not a certificate of truth.</strong> It certifies that this policy was
+        applied to these bytes, nothing more. Consistency is not wisdom: a system can be perfectly
+        consistent about a wrong premise.</li>
+    </ul>
+    <p class="fineprint">Each submission is one request to a backend function. Nothing is stored, no
+      model is called, and no data leaves the guard except the answer you see.<br>
+      SQUIRL OS™ is a trademark of SquirlOS Technologies LLC. Prototype and research material, not a
+      production warranty.</p>
+  </div>
+</section>
+
+<footer class="wrap" style="padding:40px 24px 70px;color:var(--dim);font-size:13.5px">
+  <a href="/home/">Showcase</a> · <a href="/home/#record">The public record</a> ·
+  <a href="https://zenodo.org/communities/dcai">DCAI on Zenodo</a> ·
+  <a href="https://science.squirlos-technologies.com">DSOS Science</a>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var ENDPOINT = "https://gabriel-603736bc.base44.app/functions/gateDemo";
+  var $ = function(id){ return document.getElementById(id); };
+  var lastReceipt = null;
+
+  var CASES = {
+    allow: {
+      json: {
+        action_type: "write_record",
+        collection: "trophy_roster",
+        record_id: "R-1",
+        target_app_id: "demo-app",
+        payload: { rows: 63 }
+      },
+      has: true
+    },
+    deny: {
+      json: { action_type: "delete_all_records", destructive: true },
+      has: true
+    },
+    unseen: {
+      json: { action_type: "reticulate_splines" },
+      has: true
+    },
+    empty: { json: null, has: false }
+  };
+
+  function setPreset(name){
+    var buttons = document.querySelectorAll("#presets .chip");
+    for (var i=0;i<buttons.length;i++){
+      buttons[i].setAttribute("aria-pressed", buttons[i].getAttribute("data-case") === name ? "true" : "false");
+    }
+  }
+
+  async function sha256Hex(text){
+    var bytes = new TextEncoder().encode(text);
+    var buf = await crypto.subtle.digest("SHA-256", bytes);
+    return Array.prototype.map.call(new Uint8Array(buf), function(b){
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  function renderVerdict(res){
+    var word = $("verdict-word");
+    word.textContent = res.verdict;
+    word.className = "verdict-word " + (res.verdict === "ALLOW" ? "v-allow" : "v-deny");
+    $("verdict-sub").textContent = "Default behaviour: deny. Policy " + res.policy_version +
+      ". Decided " + res.receipt.decided_at + (res.side_effect ? " · side effect: " + res.side_effect : "");
+
+    var codes = $("codes"); codes.innerHTML = "";
+    (res.reason_codes || []).forEach(function(c){
+      var li = document.createElement("li"); li.textContent = c; codes.appendChild(li);
+    });
+
+    var reasons = $("reasons"); reasons.innerHTML = "";
+    (res.reasons || []).forEach(function(r){
+      var li = document.createElement("li"); li.textContent = r.detail; reasons.appendChild(li);
+    });
+
+    var d = $("digest");
+    d.hidden = false;
+    d.textContent = res.receipt.algorithm + " " + res.receipt.digest + "\n\nover these bytes:\n" + res.receipt.payload_canonical;
+
+    lastReceipt = res.receipt;
+    $("copy").disabled = false;
+    $("download").disabled = false;
+    $("tamper").disabled = false;
+    $("copycmd").disabled = false;
+  }
+
+  async function submit(){
+    var raw = $("proposal").value.trim();
+    var err = $("parse-error");
+    var body = {};
+    if (raw !== ""){
+      try { body = { proposal: JSON.parse(raw) }; }
+      catch (e) {
+        err.hidden = false;
+        err.textContent = "That is not valid JSON, so there is nothing to hand the guard: " + e.message;
+        return;
+      }
+    }
+    err.hidden = true;
+    $("status").textContent = "Posting to the guard…";
+    $("submit").disabled = true;
+    try {
+      var resp = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      var data = await resp.json();
+      if (!resp.ok){
+        $("status").textContent = "The guard returned an error: " + (data.error || resp.status);
+        return;
+      }
+      renderVerdict(data);
+      $("status").textContent = "Answered by the live guard.";
+    } catch (e) {
+      $("status").textContent = "The request did not reach the guard: " + e.message;
+    } finally {
+      $("submit").disabled = false;
+    }
+  }
+
+  document.querySelectorAll("#presets .chip").forEach(function(b){
+    b.addEventListener("click", function(){
+      var name = b.getAttribute("data-case");
+      setPreset(name);
+      var c = CASES[name];
+      $("proposal").value = c.has ? JSON.stringify(c.json, null, 2) : "";
+      $("parse-error").hidden = true;
+    });
+  });
+
+  $("submit").addEventListener("click", submit);
+
+  $("reset").addEventListener("click", function(){
+    setPreset("allow");
+    $("proposal").value = JSON.stringify(CASES.allow.json, null, 2);
+    $("verdict-word").textContent = "NOT SUBMITTED";
+    $("verdict-word").className = "verdict-word v-none";
+    $("verdict-sub").textContent = "Default behaviour is deny. Submit a proposal to see which way it goes.";
+    $("codes").innerHTML = ""; $("reasons").innerHTML = "";
+    $("digest").hidden = true; $("parse-error").hidden = true;
+    $("copy").disabled = true; $("download").disabled = true;
+    $("tamper").disabled = true; $("copycmd").disabled = true;
+    $("verify-out").textContent = ""; $("verify-detail").hidden = true;
+    $("receipt").value = ""; $("status").textContent = "";
+    lastReceipt = null;
+  });
+
+  $("copy").addEventListener("click", async function(){
+    if (!lastReceipt) return;
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(lastReceipt, null, 2));
+      $("copy").textContent = "Copied";
+      setTimeout(function(){ $("copy").textContent = "Copy receipt"; }, 1400);
+    } catch (e) {
+      $("receipt").value = JSON.stringify(lastReceipt, null, 2);
+      $("verify-out").textContent = "Clipboard blocked. The receipt is in the box below.";
+    }
+  });
+
+  $("download").addEventListener("click", function(){
+    if (!lastReceipt) return;
+    var blob = new Blob([JSON.stringify(lastReceipt, null, 2)], {type:"application/json"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "gate-receipt.json";
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+  });
+
+  $("copycmd").addEventListener("click", async function(){
+    if (!lastReceipt) return;
+    var cmd = "printf '%s' '" + lastReceipt.payload_canonical + "' | sha256sum";
+    try {
+      await navigator.clipboard.writeText(cmd);
+      $("copycmd").textContent = "Copied";
+      setTimeout(function(){ $("copycmd").textContent = "Copy the sha256sum command"; }, 1400);
+    } catch (e) {
+      $("verify-detail").hidden = false;
+      $("verify-detail").textContent = cmd;
+    }
+  });
+
+  $("load").addEventListener("click", function(){
+    if (lastReceipt) $("receipt").value = JSON.stringify(lastReceipt, null, 2);
+    else $("verify-out").textContent = "Submit a proposal first, so there is a receipt to load.";
+  });
+
+  async function runVerify(){
+    var out = $("verify-out"), det = $("verify-detail");
+    out.className = "vsub";
+    var text = $("receipt").value.trim();
+    if (!text){ out.textContent = "Paste a receipt first."; det.hidden = true; return; }
+    var obj;
+    try { obj = JSON.parse(text); }
+    catch (e){ out.textContent = "That is not valid JSON: " + e.message; det.hidden = true; return; }
+    if (!obj || typeof obj.payload_canonical !== "string" || typeof obj.digest !== "string"){
+      out.textContent = "A receipt needs payload_canonical and digest to be checkable.";
+      det.hidden = true; return;
+    }
+    var recomputed = await sha256Hex(obj.payload_canonical);
+    var ok = recomputed === obj.digest;
+    out.className = "vsub " + (ok ? "match-ok" : "match-bad");
+    out.textContent = ok
+      ? "MATCH. The digest recomputes from the bytes shown, so these are the bytes that were decided."
+      : "MISMATCH. The digest does not recompute, so the receipt has been altered since it was issued.";
+    det.hidden = false;
+    det.textContent = "claimed    " + obj.digest + "\nrecomputed " + recomputed;
+  }
+
+  $("verify").addEventListener("click", runVerify);
+
+  $("tamper").addEventListener("click", async function(){
+    var box = $("receipt");
+    var text = box.value.trim() || (lastReceipt ? JSON.stringify(lastReceipt, null, 2) : "");
+    if (!text){ $("verify-out").textContent = "Nothing loaded to tamper with."; return; }
+    var obj;
+    try { obj = JSON.parse(text); }
+    catch (e){ $("verify-out").textContent = "The box does not hold valid JSON: " + e.message; return; }
+    if (obj && typeof obj.payload_canonical === "string"){
+      obj.payload_canonical = obj.payload_canonical.indexOf('"verdict":"ALLOW"') > -1
+        ? obj.payload_canonical.replace('"verdict":"ALLOW"', '"verdict":"DENY"')
+        : obj.payload_canonical.replace('"verdict":"DENY"', '"verdict":"ALLOW"');
+    }
+    box.value = JSON.stringify(obj, null, 2);
+    await runVerify();
+  });
+
+  setPreset("allow");
+})();
+</script>
+</body>
+</html>
