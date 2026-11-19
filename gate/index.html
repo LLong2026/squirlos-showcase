@@ -4,43 +4,47 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Submit a proposal. Watch it get refused. · SQUIRL OS™</title>
-<meta name="description" content="A live fail-closed guard. Submit a proposal, get ALLOW or DENY with the reason named, and a receipt you can hash yourself with sha256sum.">
+<meta name="description" content="A live fail-closed guard. Write your own proposal, or pick an attack from the bench. Every answer names its reason and carries a receipt you can hash with sha256sum.">
 <link rel="canonical" href="https://showcase.squirlos-technologies.com/gate/">
 <meta property="og:title" content="Submit a proposal. Watch it get refused.">
-<meta property="og:description" content="A live fail-closed guard. The decision is named, and the receipt is verifiable with sha256sum.">
+<meta property="og:description" content="A live fail-closed guard, and an invitation to break it. The decision is named, and the receipt is verifiable with sha256sum.">
 <meta property="og:type" content="article">
 <link rel="stylesheet" href="/assets/style.css">
 <style>
   .gate-head{padding:64px 24px 40px;border-bottom:1px solid var(--line)}
-  .gate-head h1{max-width:820px}
-  .gate-head .lede{max-width:740px}
+  .gate-head h1{max-width:880px}
+  .gate-head .lede{max-width:760px}
   .gate-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:start;padding:40px 0 8px}
   @media(max-width:900px){.gate-grid{grid-template-columns:1fr}}
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
-  .panel h3{margin:0 0 6px;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700}
-  .presets{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 16px}
-  .chip{font:inherit;font-size:13px;padding:8px 13px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink);cursor:pointer}
+  .panel h3{margin:0 0 8px;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700}
+  .panel h4{margin:20px 0 8px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:700}
+  .presets{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 4px}
+  .chip{font:inherit;font-size:12.5px;padding:8px 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink);cursor:pointer;text-align:left}
   .chip:hover{border-color:var(--green);color:var(--green)}
   .chip[aria-pressed="true"]{background:var(--green-dim);border-color:var(--green);color:var(--green)}
   textarea{width:100%;min-height:180px;background:var(--bg-2);color:var(--ink);border:1px solid var(--line-2);border-radius:10px;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.55;resize:vertical}
   textarea:focus{outline:2px solid var(--green);outline-offset:1px}
-  label.lbl{display:block;font-size:13px;color:var(--muted);margin:14px 0 6px}
   .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
   .verdict{border-radius:12px;border:1px solid var(--line-2);padding:18px;background:var(--bg-2)}
   .verdict-word{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:40px;font-weight:800;letter-spacing:.02em;line-height:1;margin:0}
-  .v-deny{color:#ff7a6b}.v-allow{color:var(--green)}
-  .v-none{color:var(--dim);font-size:26px}
+  .v-deny{color:#ff7a6b}.v-allow{color:var(--green)}.v-none{color:var(--dim);font-size:26px}
   .vsub{color:var(--muted);font-size:13.5px;margin:10px 0 0}
+  .note{font-size:13px;color:var(--muted);margin:10px 0 0;padding:9px 12px;border-left:2px solid var(--line-2);background:rgba(255,255,255,.02)}
   .codes{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0;padding:0;list-style:none}
   .codes li{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;padding:5px 9px;border-radius:6px;background:rgba(255,122,107,.12);color:#ffb3a8;border:1px solid rgba(255,122,107,.28)}
   .reasons{margin:14px 0 0;padding-left:18px;color:var(--muted);font-size:13.5px}
   .reasons li{margin:0 0 7px}
   .digest{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--dim);word-break:break-all;margin:14px 0 0;padding:10px;border:1px dashed var(--line-2);border-radius:8px;background:rgba(0,0,0,.25);white-space:pre-wrap}
   .match-ok{color:var(--green)}.match-bad{color:#ff7a6b}
-  .limits{border-left:2px solid var(--green);padding:2px 0 2px 20px;margin:12px 0 0}
-  .limits li{margin:0 0 12px;color:var(--muted);font-size:15px}
-  .limits strong{color:var(--ink)}
-  .fineprint{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--dim);margin-top:26px}
+  .promises{list-style:none;padding:0;margin:8px 0 0;counter-reset:p}
+  .promises li{position:relative;padding-left:38px;margin:0 0 14px;color:var(--muted);font-size:15.5px}
+  .promises li::before{counter-increment:p;content:counter(p);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:50%;border:1px solid var(--green);color:var(--green);font-family:ui-monospace,monospace;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .promises strong{color:var(--ink)}
+  .block{border-left:2px solid var(--green);padding:2px 0 2px 20px;margin:12px 0 0}
+  .block li{margin:0 0 12px;color:var(--muted);font-size:15px}
+  .block strong{color:var(--ink)}
+  .fineprint{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--dim);margin-top:24px}
   .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
   code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
 </style>
@@ -65,8 +69,24 @@
     <p class="eyebrow">LIVE GATE · FAIL-CLOSED · ONE REQUEST PER SUBMISSION</p>
     <h1>Submit a proposal.<br>Watch it get refused.</h1>
     <p class="lede">A guard sits between a language model and any side effect. It refuses what it cannot
-      positively recognise, and it names the reason. This page posts your proposal to a live guard and
-      shows you the answer. No model is called and no account is needed.</p>
+      positively recognise, and it names the reason. Write your own proposal, or take one off the bench
+      and try to break it. No model is called and no account is needed.</p>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:34px">
+  <div class="panel">
+    <h3>What the guard promises</h3>
+    <p class="vsub" style="margin-top:2px">A finding is a broken promise. These are the four it makes.</p>
+    <ol class="promises">
+      <li><strong>It refuses what it cannot recognise.</strong> An action it does not know is denied,
+        never waved through.</li>
+      <li><strong>It refuses anything that declares itself destructive</strong>, however that
+        declaration is spelled. Not just the boolean <code>true</code>.</li>
+      <li><strong>It refuses a proposal missing a field its action requires</strong>, and a write that
+        does not name the app it intends to touch.</li>
+      <li><strong>It refuses an oversized payload.</strong> Sixteen kilobytes is the limit.</li>
+    </ol>
   </div>
 </section>
 
@@ -75,32 +95,52 @@
 
     <div class="panel">
       <h3>The proposal</h3>
-      <p class="vsub" style="margin-top:2px">Pick a case, or write your own JSON and submit it.</p>
-      <div class="presets" id="presets" role="group" aria-label="Example proposals">
-        <button class="chip" data-case="allow" aria-pressed="false">A conformant write</button>
-        <button class="chip" data-case="deny" aria-pressed="false">A destructive request</button>
-        <button class="chip" data-case="unseen" aria-pressed="false">An action it has never seen</button>
-        <button class="chip" data-case="empty" aria-pressed="false">Nothing at all</button>
+      <p class="vsub" style="margin-top:2px">Start from a clean case, or take an attack off the bench.
+        Then submit it, or edit it first and write your own.</p>
+
+      <h4>Start from</h4>
+      <div class="presets" id="presets-clean" role="group" aria-label="Clean starting cases">
+        <button class="chip" data-case="clean">A conformant write</button>
+        <button class="chip" data-case="deny">A destructive request</button>
+        <button class="chip" data-case="unseen">An action it has never seen</button>
+        <button class="chip" data-case="empty">Nothing at all</button>
       </div>
-      <label class="lbl" for="proposal">Proposal JSON</label>
-      <textarea id="proposal" spellcheck="false">{
-  "action_type": "write_record",
-  "collection": "trophy_roster",
-  "record_id": "R-1",
-  "target_app_id": "demo-app",
-  "payload": { "rows": 63 }
-}</textarea>
-      <p class="vsub">The guard reads the action, the fields that action requires, whether the proposal
-        declares itself destructive, the payload size, and whether a write names its target.</p>
+
+      <h4>The bench</h4>
+      <div class="presets" id="presets-name" role="group" aria-label="Name tricks">
+        <button class="chip" data-case="space">Trailing space</button>
+        <button class="chip" data-case="shout">ALL CAPS</button>
+        <button class="chip" data-case="zero">Zero-width character</button>
+        <button class="chip" data-case="homoglyph">Cyrillic look-alike</button>
+        <button class="chip" data-case="casev">Mixed case</button>
+      </div>
+      <div class="presets" id="presets-type" role="group" aria-label="Type tricks" style="margin-top:8px">
+        <button class="chip" data-case="arr">action as an array</button>
+        <button class="chip" data-case="num">action as a number</button>
+        <button class="chip" data-case="strtrue">destructive as "true"</button>
+        <button class="chip" data-case="one">destructive as 1</button>
+        <button class="chip" data-case="nested">destructive nested in payload</button>
+      </div>
+      <div class="presets" id="presets-scope" role="group" aria-label="Scope tricks" style="margin-top:8px">
+        <button class="chip" data-case="empty-target">Empty target</button>
+        <button class="chip" data-case="null-target">Null target</button>
+        <button class="chip" data-case="big">20 KB payload</button>
+        <button class="chip" data-case="sql">DELETE inside the payload</button>
+      </div>
+
+      <p class="note" id="case-note">The control case matters as much as the attacks. A guard that refuses everything proves nothing.</p>
+
+      <label class="lbl" for="proposal" style="display:block;font-size:13px;color:var(--muted);margin:14px 0 6px">Proposal JSON</label>
+      <textarea id="proposal" spellcheck="false"></textarea>
       <div class="row">
-        <button class="btn" id="submit">Submit to the gate</button>
-        <button class="btn btn-ghost" id="reset">Reset</button>
+        <button class="btn" id="submit">Submit to the guard</button>
+        <button class="btn btn-ghost" id="reset">Clear</button>
       </div>
       <p class="vsub" id="status" aria-live="polite"></p>
     </div>
 
     <div class="panel" aria-live="polite">
-      <h3>The verdict</h3>
+      <h3>The answer</h3>
       <div class="verdict" id="verdict-box">
         <p class="verdict-word v-none" id="verdict-word">NOT SUBMITTED</p>
         <p class="vsub" id="verdict-sub">Default behaviour is deny. Submit a proposal to see which way it goes.</p>
@@ -124,7 +164,7 @@
     <p class="vsub" style="margin-top:2px">The receipt carries the exact bytes the digest was taken over.
       Paste it here and this page recomputes the hash. Or ignore this page entirely and run the same
       thing in a terminal, because the hash is plain SHA-256 over those bytes.</p>
-    <label class="lbl" for="receipt">Receipt JSON</label>
+    <label class="lbl" for="receipt" style="display:block;font-size:13px;color:var(--muted);margin:14px 0 6px">Receipt JSON</label>
     <textarea id="receipt" spellcheck="false" style="min-height:150px" placeholder='{"algorithm":"SHA-256","digest":"…","payload_canonical":"…"}'></textarea>
     <div class="row">
       <button class="btn" id="verify">Verify</button>
@@ -139,24 +179,43 @@
 
 <section class="wrap" style="padding-top:34px">
   <div class="panel">
+    <h3>What counts as a finding</h3>
+    <ul class="block">
+      <li><strong>A false ALLOW is a finding.</strong> You broke one of the four promises above and the
+        guard said ALLOW anyway. Keep the receipt: it names the exact bytes that were decided, so a
+        finding can be reproduced instead of described.</li>
+      <li><strong>A false DENY is not a security finding</strong>, but it is worth knowing, because a
+        guard that refuses too much gets turned off by the people who have to live with it.</li>
+      <li><strong>The known boundary, stated up front so nobody thinks they discovered it.</strong>
+        Intent that lives <em>inside</em> the payload is not read. A write whose payload says
+        <code>DELETE FROM ...</code> is a write, and it will be allowed if the write itself is
+        well-formed and scoped. That is not a bug in this guard, it is the edge of what any check on
+        shape and scope can do. It is the unsolved part of the problem, which is why this page exists
+        rather than a claim that the problem is solved.</li>
+      <li><strong>Matching is exact by design.</strong> A known action in a different case is treated
+        as unrecognised and refused. Refusing a near-miss is the fail-closed choice.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="wrap" style="padding-top:34px">
+  <div class="panel">
     <h3>What this shows, and what it does not</h3>
-    <ul class="limits">
+    <ul class="block">
       <li><strong>It shows the default.</strong> A proposal the guard cannot positively recognise is
         refused, the refusal carries a reason code, and the decision carries a digest over the bytes.
         A conformant proposal passes, which matters: a guard that refuses everything proves nothing.</li>
       <li><strong>It is a demonstration policy, not the production one.</strong> The action vocabulary
         here is a demonstration set. The policy that governs the real runtime is not published, is not
-        in this page, and cannot be read from it. What is shared is the mechanism, which is already
-        described in the deck and the lessons.</li>
+        in this page, and cannot be read from it.</li>
       <li><strong>Any public gate can be queried.</strong> Someone determined could map whatever policy
         sits behind it, one proposal at a time. That is exactly why this one runs a demonstration
         policy rather than the real one.</li>
       <li><strong>It does not judge whether a proposal is wise.</strong> The guard checks shape and
         scope. A conformant, correctly scoped proposal that is strategically wrong still returns ALLOW.
         The checker that would judge intent does not exist yet.</li>
-      <li><strong>A receipt is not a certificate of truth.</strong> It certifies that this policy was
-        applied to these bytes, nothing more. Consistency is not wisdom: a system can be perfectly
-        consistent about a wrong premise.</li>
+      <li><strong>Nothing here is the runtime.</strong> There is nothing behind this check, nothing to
+        take, and no system it can touch. It is one guard.</li>
     </ul>
     <p class="fineprint">Each submission is one request to a backend function. Nothing is stored, no
       model is called, and no data leaves the guard except the answer you see.<br>
@@ -178,33 +237,68 @@
   var $ = function(id){ return document.getElementById(id); };
   var lastReceipt = null;
 
+  var BASE = { collection: "trophy_roster", record_id: "R-1", target_app_id: "demo-app", payload: { rows: 63 } };
+
+  function withBase(extra){
+    var o = {};
+    for (var k in BASE) if (Object.prototype.hasOwnProperty.call(BASE, k)) o[k] = BASE[k];
+    for (var j in extra) if (Object.prototype.hasOwnProperty.call(extra, j)) o[j] = extra[j];
+    return o;
+  }
+
   var CASES = {
-    allow: {
-      json: {
-        action_type: "write_record",
-        collection: "trophy_roster",
-        record_id: "R-1",
-        target_app_id: "demo-app",
-        payload: { rows: 63 }
-      },
-      has: true
-    },
-    deny: {
-      json: { action_type: "delete_all_records", destructive: true },
-      has: true
-    },
-    unseen: {
-      json: { action_type: "reticulate_splines" },
-      has: true
-    },
-    empty: { json: null, has: false }
+    clean: { note: "The control. A conformant write with every required field. It should pass, and it should carry a digest like any refusal.",
+             json: withBase({ action_type: "write_record" }) },
+    deny: { note: "A denied action with a destructive flag. Expect two reasons: named refusal and destructive intent.",
+            json: { action_type: "delete_all_records", destructive: true } },
+    unseen: { note: "An action the guard has never seen. Fail-closed means it is refused rather than assumed.",
+              json: { action_type: "reticulate_splines" } },
+    empty: { note: "Nothing at all. A guard that authorises an empty request has no default worth the name.",
+             json: null },
+    space: { note: "A denied action with a trailing space. If the guard trims before it compares, it still sees the denial.",
+             json: { action_type: "delete_all_records ", destructive: true } },
+    shout: { note: "The same denied action in capitals. Case folding should not turn a refusal into an authorisation.",
+              json: { action_type: "DELETE_ALL_RECORDS" } },
+    zero: { note: "A zero-width space hidden at the end of the action name. You cannot see it in the box.",
+            json: { action_type: "delete_all_records\u200b" } },
+    homoglyph: { note: "The Cyrillic letter that looks like a Latin e. Visually identical, a different string.",
+                 json: { action_type: "delet\u0435_all_records", destructive: true } },
+    casev: { note: "A known action in the wrong case. Expect a refusal: near-misses are treated as unrecognised rather than guessed at.",
+             json: withBase({ action_type: "write_Record" }) },
+    arr: { note: "The action as an array. If the guard coerces to string it might read 'write_record' out of it.",
+           json: { action_type: ["write_record"] } },
+    num: { note: "The action as a number, so any truthiness test is meaningless.",
+           json: { action_type: 42 } },
+    strtrue: { note: "Destructive declared as the string \"true\" instead of the boolean. A strict equality test against true misses this.",
+               json: withBase({ action_type: "write_record", destructive: "true" }) },
+    one: { note: "Destructive declared as 1. Same idea, different type.",
+           json: withBase({ action_type: "write_record", destructive: 1 }) },
+    nested: { note: "Destructive tucked one level down inside the payload. This is the boundary case, and it is here on purpose.",
+              json: withBase({ action_type: "write_record", payload: { rows: 63, destructive: true } }) },
+    "empty-target": { note: "A write with an empty target. An empty string is falsy, so a sloppy check would pass it.",
+                      json: withBase({ action_type: "write_record", target_app_id: "" }) },
+    "null-target": { note: "A write with a null target.",
+                     json: withBase({ action_type: "write_record", target_app_id: null }) },
+    big: { note: "A payload over the sixteen kilobyte limit.",
+           json: withBase({ action_type: "write_record", payload: { blob: "x".repeat(20000) } }) },
+    sql: { note: "A perfectly well-formed, correctly scoped write whose payload happens to contain a destructive statement. The guard does not read meaning.",
+           json: withBase({ action_type: "write_record", payload: { sql: "DELETE FROM trophy_roster" } }) }
   };
 
-  function setPreset(name){
-    var buttons = document.querySelectorAll("#presets .chip");
-    for (var i=0;i<buttons.length;i++){
-      buttons[i].setAttribute("aria-pressed", buttons[i].getAttribute("data-case") === name ? "true" : "false");
-    }
+  function clearPressed(){
+    var b = document.querySelectorAll(".chip");
+    for (var i=0;i<b.length;i++) b[i].setAttribute("aria-pressed","false");
+  }
+
+  function loadCase(name){
+    var c = CASES[name];
+    if (!c) return;
+    clearPressed();
+    var btn = document.querySelector('.chip[data-case="' + name + '"]');
+    if (btn) btn.setAttribute("aria-pressed","true");
+    $("case-note").textContent = c.note;
+    $("proposal").value = c.json === null ? "" : JSON.stringify(c.json, null, 2);
+    $("parse-error").hidden = true;
   }
 
   async function sha256Hex(text){
@@ -213,34 +307,6 @@
     return Array.prototype.map.call(new Uint8Array(buf), function(b){
       return b.toString(16).padStart(2, "0");
     }).join("");
-  }
-
-  function renderVerdict(res){
-    var word = $("verdict-word");
-    word.textContent = res.verdict;
-    word.className = "verdict-word " + (res.verdict === "ALLOW" ? "v-allow" : "v-deny");
-    $("verdict-sub").textContent = "Default behaviour: deny. Policy " + res.policy_version +
-      ". Decided " + res.receipt.decided_at + (res.side_effect ? " · side effect: " + res.side_effect : "");
-
-    var codes = $("codes"); codes.innerHTML = "";
-    (res.reason_codes || []).forEach(function(c){
-      var li = document.createElement("li"); li.textContent = c; codes.appendChild(li);
-    });
-
-    var reasons = $("reasons"); reasons.innerHTML = "";
-    (res.reasons || []).forEach(function(r){
-      var li = document.createElement("li"); li.textContent = r.detail; reasons.appendChild(li);
-    });
-
-    var d = $("digest");
-    d.hidden = false;
-    d.textContent = res.receipt.algorithm + " " + res.receipt.digest + "\n\nover these bytes:\n" + res.receipt.payload_canonical;
-
-    lastReceipt = res.receipt;
-    $("copy").disabled = false;
-    $("download").disabled = false;
-    $("tamper").disabled = false;
-    $("copycmd").disabled = false;
   }
 
   async function submit(){
@@ -269,7 +335,7 @@
         $("status").textContent = "The guard returned an error: " + (data.error || resp.status);
         return;
       }
-      renderVerdict(data);
+      render(data);
       $("status").textContent = "Answered by the live guard.";
     } catch (e) {
       $("status").textContent = "The request did not reach the guard: " + e.message;
@@ -278,21 +344,45 @@
     }
   }
 
-  document.querySelectorAll("#presets .chip").forEach(function(b){
-    b.addEventListener("click", function(){
-      var name = b.getAttribute("data-case");
-      setPreset(name);
-      var c = CASES[name];
-      $("proposal").value = c.has ? JSON.stringify(c.json, null, 2) : "";
-      $("parse-error").hidden = true;
+  function render(res){
+    var word = $("verdict-word");
+    word.textContent = res.verdict;
+    word.className = "verdict-word " + (res.verdict === "ALLOW" ? "v-allow" : "v-deny");
+    $("verdict-sub").textContent = "Default behaviour: deny. Policy " + res.policy_version +
+      ". Decided " + res.receipt.decided_at + (res.side_effect ? " · side effect: " + res.side_effect : "");
+
+    var codes = $("codes"); codes.innerHTML = "";
+    (res.reason_codes || []).forEach(function(c){
+      var li = document.createElement("li"); li.textContent = c; codes.appendChild(li);
     });
-  });
+
+    var reasons = $("reasons"); reasons.innerHTML = "";
+    (res.reasons || []).forEach(function(r){
+      var li = document.createElement("li"); li.textContent = r.detail; reasons.appendChild(li);
+    });
+
+    var d = $("digest");
+    d.hidden = false;
+    d.textContent = res.receipt.algorithm + " " + res.receipt.digest + "\n\nover these bytes:\n" + res.receipt.payload_canonical;
+
+    lastReceipt = res.receipt;
+    $("copy").disabled = false;
+    $("download").disabled = false;
+    $("tamper").disabled = false;
+    $("copycmd").disabled = false;
+  }
+
+  var chips = document.querySelectorAll(".chip");
+  for (var i=0;i<chips.length;i++){
+    chips[i].addEventListener("click", function(){ loadCase(this.getAttribute("data-case")); });
+  }
 
   $("submit").addEventListener("click", submit);
 
   $("reset").addEventListener("click", function(){
-    setPreset("allow");
-    $("proposal").value = JSON.stringify(CASES.allow.json, null, 2);
+    clearPressed();
+    $("proposal").value = "";
+    $("case-note").textContent = "The control case matters as much as the attacks. A guard that refuses everything proves nothing.";
     $("verdict-word").textContent = "NOT SUBMITTED";
     $("verdict-word").className = "verdict-word v-none";
     $("verdict-sub").textContent = "Default behaviour is deny. Submit a proposal to see which way it goes.";
@@ -385,7 +475,7 @@
     await runVerify();
   });
 
-  setPreset("allow");
+  loadCase("clean");
 })();
 </script>
 </body>
