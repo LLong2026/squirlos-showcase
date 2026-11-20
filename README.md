@@ -5,6 +5,6 @@ dashboard, the vault, the science site, the curriculum, DeterminCode and the DCA
 
 Static site, no build step, no external dependencies, no analytics, no cookies.
 Every figure shown is either fetched live from the containment feed
-(`four-horsemen-public/cage_watch_feed.json`) or marked as not live.
+(`cage-watch-feed/cage_watch_feed.json`) or marked as not live.
 
 Deployed with GitHub Pages. `robots.txt` disallows indexing while this is a preview.
