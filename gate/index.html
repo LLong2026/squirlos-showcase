@@ -201,6 +201,13 @@
 <section class="wrap" style="padding-top:34px">
   <div class="panel">
     <h3>What this shows, and what it does not</h3>
+    <p class="section-lede"><strong>Two components, one page, one paper.</strong> The bench above
+      demonstrates the shape-and-scope guard: it decides whether a proposal is well-formed and in
+      scope, and it runs a demonstration policy that is deliberately not the production one. The paper
+      describes a different component, the quorum gate, which decides whether enough distinct seats
+      signed the same bytes. The four defect classes the paper reports cannot be reproduced here,
+      because none of them live in this guard. What the two share is the discipline: every verdict
+      carries the bytes it was taken over, so a refusal can be checked instead of believed.</p>
     <ul class="block">
       <li><strong>It shows the default.</strong> A proposal the guard cannot positively recognise is
         refused, the refusal carries a reason code, and the decision carries a digest over the bytes.
