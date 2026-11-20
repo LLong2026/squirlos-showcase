@@ -4,7 +4,7 @@
    source line says so instead of pretending to be current. */
 
 (function () {
-  var FEED = 'https://raw.githubusercontent.com/LLong2026/four-horsemen-public/main/cage_watch_feed.json';
+  var FEED = 'https://raw.githubusercontent.com/LLong2026/cage-watch-feed/main/cage_watch_feed.json';
   var line = document.getElementById('feed-line');
   var fields = {
     cycles: document.querySelector('[data-live="cycles"]'),
